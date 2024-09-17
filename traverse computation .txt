@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Traverse Survey Calculation</title>
+    <style>
+        table {
+            width: 80%;
+            margin: 20px auto;
+            border-collapse: collapse;
+        }
+        table, th, td {
+            border: 1px solid black;
+            text-align: center;
+            padding: 8px;
+        }
+        th {
+            background-color: #f2f2f2;
+        }
+        input {
+            width: 80px;
+            padding: 5px;
+            text-align: center;
+        }
+        button {
+            display: block;
+            margin: 20px auto;
+            padding: 10px 20px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #45a049;
+        }
+    </style>
+</head>
+<body>
+
+<h2 style="text-align: center;">Traverse Survey Computation</h2>
+
+<table>
+    <thead>
+        <tr>
+            <th>Station</th>
+            <th>Distance (m)</th>
+            <th>Bearing (degrees)</th>
+            <th>ΔE (Easting)</th>
+            <th>ΔN (Northing)</th>
+            <th>Cumulative E</th>
+            <th>Cumulative N</th>
+        </tr>
+    </thead>
+    <tbody id="traverseTable">
+        <!-- Initial empty row for Station 1 -->
+        <tr>
+            <td>1</td>
+            <td><input type="number" id="distance1"></td>
+            <td><input type="number" id="bearing1"></td>
+            <td id="deltaE1"></td>
+            <td id="deltaN1"></td>
+            <td id="cumulativeE1">0.00</td>
+            <td id="cumulativeN1">0.00</td>
+        </tr>
+        <tr>
+            <td>2</td>
+            <td><input type="number" id="distance2"></td>
+            <td><input type="number" id="bearing2"></td>
+            <td id="deltaE2"></td>
+            <td id="deltaN2"></td>
+            <td id="cumulativeE2"></td>
+            <td id="cumulativeN2"></td>
+        </tr>
+    </tbody>
+</table>
+
+<button onclick="computeTraverse()">Compute Traverse</button>
+
+<script>
+    function computeTraverse() {
+        // Initial Coordinates (assuming (0,0) for the first station)
+        let cumulativeE = 0;
+        let cumulativeN = 0;
+
+        // Loop through stations (You can extend the loop for more stations)
+        for (let i = 1; i <= 2; i++) {  // Adjust this number for more stations
+            // Get distance and bearing input values
+            const distance = parseFloat(document.getElementById(`distance${i}`).value);
+            const bearing = parseFloat(document.getElementById(`bearing${i}`).value);
+
+            // Check for valid input
+            if (isNaN(distance) || isNaN(bearing)) {
+                alert('Please enter valid numeric values for distance and bearing.');
+                return;
+            }
+
+            // Convert bearing from degrees to radians
+            const bearingRadians = bearing * Math.PI / 180;
+
+            // Calculate ΔE and ΔN
+            const deltaE = distance * Math.sin(bearingRadians);
+            const deltaN = distance * Math.cos(bearingRadians);
+
+            // Update cumulative Easting and Northing
+            cumulativeE += deltaE;
+            cumulativeN += deltaN;
+            // Display results in the table
+            document.getElementById(`deltaE${i}`).innerText = deltaE.toFixed(2);
+            document.getElementById(`deltaN${i}`).innerText = deltaN.toFixed(2);
+            document.getElementById(`cumulativeE${i}`).innerText = cumulativeE.toFixed(2);
+            document.getElementById(`cumulativeN${i}`).innerText = cumulativeN.toFixed(2);
+        }
+    }
+</script>
+
+</body>
+</html>
